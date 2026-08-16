@@ -1367,10 +1367,12 @@ app.post(
         }
       }
 
-      await business.handleUpdate(
-        req.body
-      );
-
+await business.handleUpdate(
+  req.body,
+  {
+    token: BOT_TOKEN
+  }
+);
       res.json({
         ok: true
       });
