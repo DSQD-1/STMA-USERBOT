@@ -7,11 +7,11 @@
     "start": "node server.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.22.0"
   },
   "dependencies": {
     "@libsql/client": "^0.15.9",
-    "better-sqlite3": "^11.10.0",
+    "better-sqlite3": "^12.4.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
   }
