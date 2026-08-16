@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,
+    initial-scale=1,
+    maximum-scale=1,
+    user-scalable=no"
+  >
+
+  <title>STMA</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link
+    rel="stylesheet"
+    href="/style.css"
+  >
+</head>
+
+<body>
+
+<div id="splash" class="splash">
+  <div class="logo">🔥</div>
+  <div class="splash-title">STMA</div>
+  <div class="splash-subtitle">
+    Smart Telegram Management Assistant
+  </div>
+
+  <div class="loader">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+
+  <header class="topbar">
+    <div>
+      <div class="brand">STMA</div>
+      <div id="status" class="status">
+        Проверка...
+      </div>
+    </div>
+
+    <button
+      class="icon-button"
+      onclick="openPage('settings')"
+    >
+      ⚙️
+    </button>
+  </header>
+
+  <main id="content"></main>
+
+  <nav class="bottom-nav">
+
+    <button onclick="openPage('home')">
+      <span>⌂</span>
+      <small>Главная</small>
+    </button>
+
+    <button onclick="openPage('ai')">
+      <span>✦</span>
+      <small>AI</small>
+    </button>
+
+    <button onclick="openPage('protection')">
+      <span>◉</span>
+      <small>Защита</small>
+    </button>
+
+    <button onclick="openPage('watch')">
+      <span>◌</span>
+      <small>Слежка</small>
+    </button>
+
+    <button onclick="openPage('more')">
+      <span>•••</span>
+      <small>Ещё</small>
+    </button>
+
+  </nav>
+
+</div>
+
+<script src="/app.js"></script>
+
+</body>
+</html>
