@@ -1,6 +1,6 @@
 {
-  "name": "stma",
-  "version": "2.0.0",
+  "name": "stma-userbot",
+  "version": "3.0.0",
   "description": "STMA Telegram Business automation Web App",
   "main": "server.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "node": "20.x"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.9",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
   }
