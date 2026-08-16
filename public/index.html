@@ -5,90 +5,555 @@
 
   <meta
     name="viewport"
-    content="width=device-width,
-    initial-scale=1,
-    maximum-scale=1,
-    user-scalable=no"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
   >
 
   <title>STMA</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <link
-    rel="stylesheet"
-    href="/style.css"
-  >
+  <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
-<div id="splash" class="splash">
-  <div class="logo">🔥</div>
-  <div class="splash-title">STMA</div>
-  <div class="splash-subtitle">
-    Smart Telegram Management Assistant
-  </div>
+  <div id="app">
 
-  <div class="loader">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
+    <!-- HEADER -->
 
-<div id="app" class="app hidden">
+    <header class="topbar">
 
-  <header class="topbar">
-    <div>
-      <div class="brand">STMA</div>
-      <div id="status" class="status">
-        Проверка...
+      <div>
+        <div class="brand">
+          <span class="brand-dot"></span>
+          STMA
+        </div>
+
+        <div class="subtitle">
+          Telegram Business Control
+        </div>
       </div>
-    </div>
 
-    <button
-      class="icon-button"
-      onclick="openPage('settings')"
-    >
-      ⚙️
-    </button>
-  </header>
+      <button
+        class="icon-button"
+        id="settingsButton"
+      >
+        ⚙️
+      </button>
 
-  <main id="content"></main>
+    </header>
 
-  <nav class="bottom-nav">
 
-    <button onclick="openPage('home')">
-      <span>⌂</span>
-      <small>Главная</small>
-    </button>
+    <!-- CONNECTION -->
 
-    <button onclick="openPage('ai')">
-      <span>✦</span>
-      <small>AI</small>
-    </button>
+    <section class="connection-card">
 
-    <button onclick="openPage('protection')">
-      <span>◉</span>
-      <small>Защита</small>
-    </button>
+      <div class="connection-left">
 
-    <button onclick="openPage('watch')">
-      <span>◌</span>
-      <small>Слежка</small>
-    </button>
+        <div class="status-dot"></div>
 
-    <button onclick="openPage('more')">
-      <span>•••</span>
-      <small>Ещё</small>
-    </button>
+        <div>
+          <div class="connection-title">
+            Business Connection
+          </div>
 
-  </nav>
+          <div
+            class="connection-status"
+            id="connectionStatus"
+          >
+            Проверка...
+          </div>
+        </div>
 
-</div>
+      </div>
 
-<script src="/app.js"></script>
+      <div
+        class="connection-badge"
+        id="connectionBadge"
+      >
+        —
+      </div>
+
+    </section>
+
+
+    <!-- HOME -->
+
+    <main id="page-home" class="page active">
+
+      <section class="hero">
+
+        <div class="hero-label">
+          CONTROL CENTER
+        </div>
+
+        <h1>
+          Управляй Telegram<br>
+          из одного места.
+        </h1>
+
+        <p>
+          Сообщения, муты, мониторинг
+          и слежка — без команд в чатах.
+        </p>
+
+      </section>
+
+
+      <section class="quick-grid">
+
+        <button
+          class="action-card"
+          data-page="ai"
+        >
+          <span class="action-icon">✦</span>
+
+          <span>
+            <b>AI-команды</b>
+            <small>Управление обычным текстом</small>
+          </span>
+        </button>
+
+
+        <button
+          class="action-card"
+          data-page="mute"
+        >
+          <span class="action-icon">🔇</span>
+
+          <span>
+            <b>Муты</b>
+            <small>Управление ограничениями</small>
+          </span>
+        </button>
+
+
+        <button
+          class="action-card"
+          data-page="messages"
+        >
+          <span class="action-icon">✉️</span>
+
+          <span>
+            <b>Сообщения</b>
+            <small>Отправка и автоудаление</small>
+          </span>
+        </button>
+
+
+        <button
+          class="action-card"
+          data-page="watch"
+        >
+          <span class="action-icon">🕵️</span>
+
+          <span>
+            <b>Слежка</b>
+            <small>До 10 профилей</small>
+          </span>
+        </button>
+
+      </section>
+
+
+      <section class="stats">
+
+        <div class="stat">
+          <span id="statMessages">0</span>
+          <small>сообщений</small>
+        </div>
+
+        <div class="stat">
+          <span id="statEvents">0</span>
+          <small>событий</small>
+        </div>
+
+        <div class="stat">
+          <span id="statMutes">0</span>
+          <small>мутов</small>
+        </div>
+
+        <div class="stat">
+          <span id="statWatches">0</span>
+          <small>слежек</small>
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- AI -->
+
+    <main id="page-ai" class="page">
+
+      <div class="page-header">
+
+        <button
+          class="back-button"
+          data-page="home"
+        >
+          ‹
+        </button>
+
+        <div>
+          <h2>AI Control</h2>
+          <p>Управление обычным языком</p>
+        </div>
+
+      </div>
+
+
+      <div
+        class="ai-chat"
+        id="aiChat"
+      >
+
+        <div class="ai-message">
+
+          <div class="ai-avatar">
+            ✦
+          </div>
+
+          <div class="ai-bubble">
+
+            <b>STMA AI</b>
+
+            <p>
+              Привет. Я готов управлять
+              твоим Telegram Business.
+            </p>
+
+            <p class="hint">
+              Например: «замуть @username
+              на 30 минут»
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="ai-input-wrap">
+
+        <textarea
+          id="aiInput"
+          placeholder="Напиши, что нужно сделать..."
+          rows="1"
+        ></textarea>
+
+        <button
+          id="aiSend"
+          class="send-button"
+        >
+          ↑
+        </button>
+
+      </div>
+
+    </main>
+
+
+    <!-- MUTE -->
+
+    <main id="page-mute" class="page">
+
+      <div class="page-header">
+
+        <button
+          class="back-button"
+          data-page="home"
+        >
+          ‹
+        </button>
+
+        <div>
+          <h2>Муты</h2>
+          <p>Управление пользователями</p>
+        </div>
+
+      </div>
+
+
+      <div
+        id="muteList"
+        class="list"
+      >
+
+        <div class="empty-state">
+          <div>🔇</div>
+          <b>Мутов пока нет</b>
+          <span>
+            Используй AI или добавь пользователя вручную.
+          </span>
+        </div>
+
+      </div>
+
+    </main>
+
+
+    <!-- MESSAGES -->
+
+    <main id="page-messages" class="page">
+
+      <div class="page-header">
+
+        <button
+          class="back-button"
+          data-page="home"
+        >
+          ‹
+        </button>
+
+        <div>
+          <h2>Сообщения</h2>
+          <p>Отправка через Business</p>
+        </div>
+
+      </div>
+
+
+      <section class="form-card">
+
+        <label>
+          Получатель / чат
+        </label>
+
+        <input
+          id="messageChat"
+          placeholder="@username или ID"
+        >
+
+
+        <label>
+          Сообщение
+        </label>
+
+        <textarea
+          id="messageText"
+          placeholder="Текст сообщения..."
+          rows="4"
+        ></textarea>
+
+
+        <div class="two-columns">
+
+          <div>
+
+            <label>
+              Удалить через
+            </label>
+
+            <select id="deleteAfter">
+
+              <option value="0">
+                Не удалять
+              </option>
+
+              <option value="1">
+                1 минута
+              </option>
+
+              <option value="5">
+                5 минут
+              </option>
+
+              <option value="10">
+                10 минут
+              </option>
+
+              <option value="30">
+                30 минут
+              </option>
+
+              <option value="60">
+                1 час
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              Режим
+            </label>
+
+            <select id="messageMode">
+
+              <option value="normal">
+                Обычное
+              </option>
+
+              <option value="once">
+                Одноразовое
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <button
+          id="sendMessageButton"
+          class="primary-button"
+        >
+          Отправить сообщение
+        </button>
+
+      </section>
+
+    </main>
+
+
+    <!-- WATCH -->
+
+    <main id="page-watch" class="page">
+
+      <div class="page-header">
+
+        <button
+          class="back-button"
+          data-page="home"
+        >
+          ‹
+        </button>
+
+        <div>
+          <h2>Слежка</h2>
+          <p>Контроль профилей</p>
+        </div>
+
+      </div>
+
+
+      <section class="watch-info">
+
+        <div class="watch-icon">
+          🕵️
+        </div>
+
+        <div>
+
+          <b>
+            Profile Watch
+          </b>
+
+          <p>
+            STMA проверяет выбранные профили
+            и сообщает об изменениях.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <div class="watch-limit">
+
+        <span>
+          Активные слежки
+        </span>
+
+        <b>
+          <span id="watchCount">0</span>/10
+        </b>
+
+      </div>
+
+
+      <div
+        id="watchList"
+        class="list"
+      >
+
+        <div class="empty-state">
+
+          <div>🕵️</div>
+
+          <b>
+            Слежек пока нет
+          </b>
+
+          <span>
+            Добавь профиль, чтобы начать мониторинг.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        id="addWatchButton"
+        class="primary-button"
+      >
+        + Добавить профиль
+      </button>
+
+    </main>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-item active"
+        data-page="home"
+      >
+        <span>⌂</span>
+        <small>Главная</small>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="ai"
+      >
+        <span>✦</span>
+        <small>AI</small>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="mute"
+      >
+        <span>🔇</span>
+        <small>Муты</small>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="watch"
+      >
+        <span>🕵️</span>
+        <small>Слежка</small>
+      </button>
+
+    </nav>
+
+
+    <!-- TOAST -->
+
+    <div
+      id="toast"
+      class="toast"
+    ></div>
+
+  </div>
+
+
+  <script src="/app.js"></script>
 
 </body>
 </html>
