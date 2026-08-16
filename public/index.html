@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  >
+
+  <title>STMA</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: var(--tg-theme-bg-color, #0e0e10);
+      color: var(--tg-theme-text-color, #fff);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 720px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding-bottom: 90px;
+    }
+
+    .header {
+      padding: 20px 18px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background:
+        color-mix(
+          in srgb,
+          var(--tg-theme-bg-color, #0e0e10) 92%,
+          transparent
+        );
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #635bff, #8b5cf6);
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 750;
+    }
+
+    .brand-subtitle {
+      margin-top: 3px;
+      font-size: 13px;
+      opacity: .58;
+    }
+
+    .content {
+      padding: 10px 16px;
+    }
+
+    .loading,
+    .error-screen {
+      min-height: 65vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      border: 3px solid rgba(255,255,255,.15);
+      border-top-color: #635bff;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin-bottom: 18px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error-icon {
+      font-size: 42px;
+      margin-bottom: 14px;
+    }
+
+    .error-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .error-text {
+      opacity: .65;
+      line-height: 1.5;
+      max-width: 400px;
+    }
+
+    .button {
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: white;
+      background: #635bff;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    .button.secondary {
+      background: rgba(255,255,255,.08);
+      color: var(--tg-theme-text-color, #fff);
+    }
+
+    .button.danger {
+      background: #ef4444;
+    }
+
+    .card {
+      background: var(--tg-theme-secondary-bg-color, #17171a);
+      border-radius: 18px;
+      padding: 17px;
+      margin-bottom: 13px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #635bff, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .username {
+      opacity: .55;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #777;
+    }
+
+    .dot.online {
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34,197,94,.5);
+    }
+
+    .dot.offline {
+      background: #ef4444;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.045);
+    }
+
+    .stat-number {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      opacity: .5;
+      margin-top: 3px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+      background:
+        color-mix(
+          in srgb,
+          var(--tg-theme-bg-color, #0e0e10) 94%,
+          transparent
+        );
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .nav-inner {
+      max-width: 720px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .nav-button {
+      border: 0;
+      background: transparent;
+      color: var(--tg-theme-text-color, #fff);
+      opacity: .5;
+      padding: 8px 4px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .nav-button.active {
+      opacity: 1;
+      background: rgba(99,91,255,.15);
+      color: #8b83ff;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 3px;
+    }
+
+    .input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      border-radius: 13px;
+      padding: 14px;
+      color: var(--tg-theme-text-color, #fff);
+      background: rgba(255,255,255,.06);
+      margin-bottom: 8px;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .row .button {
+      flex: 1;
+    }
+
+    .list-item {
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .list-item:last-child {
+      border-bottom: 0;
+    }
+
+    .muted {
+      opacity: .55;
+      font-size: 13px;
+    }
+
+    .event {
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .event-type {
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 25px 10px;
+      opacity: .5;
+      font-size: 14px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 85px;
+      z-index: 100;
+      max-width: 500px;
+      margin: auto;
+      padding: 13px 15px;
+      border-radius: 13px;
+      background: #26262b;
+      color: white;
+      text-align: center;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="loading" class="loading">
+  <div class="spinner"></div>
+  <div>Подключение к STMA...</div>
+</div>
+
+<div id="errorScreen" class="error-screen" style="display:none;">
+  <div class="error-icon">⚠️</div>
+  <div id="errorTitle" class="error-title">
+    Не удалось подключиться
+  </div>
+  <div id="errorText" class="error-text"></div>
+  <button class="button" onclick="location.reload()">
+    Повторить
+  </button>
+</div>
+
+<div id="app" class="app" style="display:none;">
+
+  <header class="header">
+    <div class="brand">
+      <div class="logo">S</div>
+
+      <div>
+        <div class="brand-title">STMA</div>
+        <div class="brand-subtitle">
+          Управление Telegram
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- HOME -->
+
+    <section id="page-home" class="page active">
+
+      <div class="card">
+        <div class="user">
+
+          <div id="avatar" class="avatar">
+            S
+          </div>
+
+          <div>
+            <div id="userName" class="user-name">
+              —
+            </div>
+
+            <div id="username" class="username">
+              —
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card">
+
+        <div class="card-title">
+          Telegram Business
+        </div>
+
+        <div class="status">
+          <span id="statusDot" class="dot"></span>
+
+          <span id="statusText">
+            Проверка подключения...
+          </span>
+        </div>
+
+        <button
+          id="refreshButton"
+          class="button secondary"
+          onclick="loadMe()"
+        >
+          Обновить
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-title">
+          Статистика
+        </div>
+
+        <div class="stats">
+
+          <div class="stat">
+            <div id="statMessages" class="stat-number">
+              0
+            </div>
+            <div class="stat-label">
+              сообщений
+            </div>
+          </div>
+
+          <div class="stat">
+            <div id="statEdits" class="stat-number">
+              0
+            </div>
+            <div class="stat-label">
+              изменений
+            </div>
+          </div>
+
+          <div class="stat">
+            <div id="statDeleted" class="stat-number">
+              0
+            </div>
+            <div class="stat-label">
+              удалений
+            </div>
+          </div>
+
+          <div class="stat">
+            <div id="statEvents" class="stat-number">
+              0
+            </div>
+            <div class="stat-label">
+              событий
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- WATCH -->
+
+    <section id="page-watch" class="page">
+
+      <div class="card">
+
+        <div class="card-title">
+          Слежка
+        </div>
+
+        <input
+          id="watchTarget"
+          class="input"
+          placeholder="@username или Telegram ID"
+        >
+
+        <button
+          class="button"
+          onclick="addWatch()"
+        >
+          Добавить в слежку
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-title">
+          Активные слежки
+        </div>
+
+        <div id="watchList">
+          <div class="empty">
+            Загрузка...
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ACTIONS -->
+
+    <section id="page-actions" class="page">
+
+      <div class="card">
+
+        <div class="card-title">
+          AI-команда
+        </div>
+
+        <input
+          id="aiPrompt"
+          class="input"
+          placeholder="Например: замуть 123456789 на 30 минут"
+        >
+
+        <button
+          class="button"
+          onclick="runAI()"
+        >
+          Выполнить
+        </button>
+
+        <div
+          id="aiResult"
+          class="muted"
+          style="margin-top:12px;"
+        ></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+          Быстрый мут
+        </div>
+
+        <input
+          id="muteUser"
+          class="input"
+          placeholder="Telegram ID"
+        >
+
+        <input
+          id="muteDuration"
+          class="input"
+          placeholder="Например: 30 минут"
+        >
+
+        <div class="row">
+
+          <button
+            class="button"
+            onclick="muteUser()"
+          >
+            Замутить
+          </button>
+
+          <button
+            class="button secondary"
+            onclick="unmuteUser()"
+          >
+            Размутить
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+          Муты
+        </div>
+
+        <div id="muteList">
+          <div class="empty">
+            Загрузка...
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SETTINGS -->
+
+    <section id="page-settings" class="page">
+
+      <div class="card">
+
+        <div class="card-title">
+          STMA
+        </div>
+
+        <div class="muted">
+          Telegram Business Management
+        </div>
+
+        <button
+          class="button secondary"
+          onclick="loadMe()"
+        >
+          Проверить подключение
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+          Webhook
+        </div>
+
+        <div class="muted">
+          Используется серверный Telegram webhook.
+        </div>
+
+        <button
+          class="button"
+          onclick="setupWebhook()"
+        >
+          Настроить webhook
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-title">
+          События
+        </div>
+
+        <div id="eventsList">
+          <div class="empty">
+            Загрузка...
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <nav class="nav">
+
+    <div class="nav-inner">
+
+      <button
+        class="nav-button active"
+        data-page="home"
+        onclick="showPage('home')"
+      >
+        <span class="nav-icon">⌂</span>
+        Главная
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="watch"
+        onclick="showPage('watch')"
+      >
+        <span class="nav-icon">◉</span>
+        Слежка
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="actions"
+        onclick="showPage('actions')"
+      >
+        <span class="nav-icon">✦</span>
+        Действия
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="settings"
+        onclick="showPage('settings')"
+      >
+        <span class="nav-icon">⚙</span>
+        Настройки
+      </button>
+
+    </div>
+
+  </nav>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+  /*
+  ==================================================
+  TELEGRAM WEB APP
+  ==================================================
+  */
+
+  const tg = window.Telegram?.WebApp || null;
+
+  if (tg) {
+    tg.ready();
+    tg.expand();
+
+    try {
+      tg.setHeaderColor(
+        tg.themeParams?.bg_color || "#0e0e10"
+      );
+
+      tg.setBackgroundColor(
+        tg.themeParams?.bg_color || "#0e0e10"
+      );
+    } catch {}
+  }
+
+
+  /*
+  ==================================================
+  API
+  ==================================================
+  */
+
+  async function api(
+    url,
+    options = {}
+  ) {
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    };
+
+    /*
+     * КЛЮЧЕВОЙ МОМЕНТ:
+     * Telegram Mini App передаёт initData
+     * серверу для проверки пользователя.
+     */
+
+    if (tg && tg.initData) {
+      headers[
+        "X-Telegram-Init-Data"
+      ] = tg.initData;
+    }
+
+    const response = await fetch(
+      url,
+      {
+        ...options,
+        headers
+      }
+    );
+
+    let data;
+
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(
+        `Сервер вернул HTTP ${response.status}`
+      );
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        `HTTP ${response.status}`
+      );
+    }
+
+    return data;
+  }
+
+
+  /*
+  ==================================================
+  LOAD USER
+  ==================================================
+  */
+
+  async function loadMe() {
+    try {
+
+      if (!tg) {
+        throw new Error(
+          "STMA нужно открывать внутри Telegram Mini App."
+        );
+      }
+
+      if (!tg.initData) {
+        throw new Error(
+          "Telegram не передал данные авторизации. Открой STMA через кнопку бота."
+        );
+      }
+
+      const data =
+        await api("/api/me");
+
+      if (!data.ok) {
+        throw new Error(
+          data.error ||
+          "Не удалось получить данные"
+        );
+      }
+
+      renderUser(
+        data.user
+      );
+
+      renderConnection(
+        data.connected,
+        data.connection
+      );
+
+      renderStats(
+        data.stats
+      );
+
+      hideLoading();
+
+      await Promise.all([
+        loadWatches(),
+        loadMutes(),
+        loadEvents()
+      ]);
+
+    } catch (error) {
+
+      console.error(
+        "LOAD ME ERROR:",
+        error
+      );
+
+      showError(
+        error.message
+      );
+    }
+  }
+
+
+  /*
+  ==================================================
+  USER
+  ==================================================
+  */
+
+  function renderUser(user) {
+
+    if (!user) {
+      return;
+    }
+
+    const first =
+      user.first_name || "";
+
+    const last =
+      user.last_name || "";
+
+    const fullName =
+      `${first} ${last}`.trim() ||
+      "Telegram пользователь";
+
+    document.getElementById(
+      "userName"
+    ).textContent = fullName;
+
+    document.getElementById(
+      "username"
+    ).textContent =
+      user.username
+        ? `@${user.username}`
+        : `ID: ${user.id}`;
+
+    document.getElementById(
+      "avatar"
+    ).textContent =
+      first
+        ? first.charAt(0).toUpperCase()
+        : "T";
+  }
+
+
+  /*
+  ==================================================
+  CONNECTION
+  ==================================================
+  */
+
+  function renderConnection(
+    connected,
+    connection
+  ) {
+
+    const dot =
+      document.getElementById(
+        "statusDot"
+      );
+
+    const text =
+      document.getElementById(
+        "statusText"
+      );
+
+    if (connected) {
+
+      dot.className =
+        "dot online";
+
+      text.textContent =
+        connection?.username
+          ? `Подключён: @${connection.username}`
+          : "Telegram Business подключён";
+
+    } else {
+
+      dot.className =
+        "dot offline";
+
+      text.textContent =
+        "Telegram Business не подключён";
+    }
+  }
+
+
+  /*
+  ==================================================
+  STATS
+  ==================================================
+  */
+
+  function renderStats(stats) {
+
+    stats =
+      stats || {};
+
+    document.getElementById(
+      "statMessages"
+    ).textContent =
+      stats.messages || 0;
+
+    document.getElementById(
+      "statEdits"
+    ).textContent =
+      stats.edits || 0;
+
+    document.getElementById(
+      "statDeleted"
+    ).textContent =
+      stats.deleted || 0;
+
+    document.getElementById(
+      "statEvents"
+    ).textContent =
+      stats.events || 0;
+  }
+
+
+  /*
+  ==================================================
+  WATCH
+  ==================================================
+  */
+
+  async function loadWatches() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/watches"
+        );
+
+      const list =
+        document.getElementById(
+          "watchList"
+        );
+
+      const watches =
+        data.watches || [];
+
+      if (!watches.length) {
+
+        list.innerHTML =
+          `<div class="empty">
+             Слежек пока нет
+           </div>`;
+
+        return;
+      }
+
+      list.innerHTML =
+        watches.map(
+          watch => `
+            <div class="list-item">
+              <div>
+                <b>${escapeHtml(
+                  watch.target
+                )}</b>
+              </div>
+
+              <div class="muted">
+                ${watch.enabled ? "Активна" : "Отключена"}
+              </div>
+
+              <button
+                class="button danger"
+                onclick="removeWatch(${Number(watch.id)})"
+              >
+                Удалить
+              </button>
+            </div>
+          `
+        ).join("");
+
+    } catch (error) {
+
+      console.error(
+        "WATCH LOAD:",
+        error
+      );
+    }
+  }
+
+
+  async function addWatch() {
+
+    const input =
+      document.getElementById(
+        "watchTarget"
+      );
+
+    const target =
+      input.value.trim();
+
+    if (!target) {
+      toast("Укажи username или Telegram ID");
+      return;
+    }
+
+    try {
+
+      await api(
+        "/api/watches",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            target
+          })
+        }
+      );
+
+      input.value = "";
+
+      toast("Добавлено в слежку");
+
+      await loadWatches();
+
+    } catch (error) {
+
+      toast(
+        error.message
+      );
+    }
+  }
+
+
+  async function removeWatch(id) {
+
+    try {
+
+      await api(
+        `/api/watches/${id}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+      toast("Слежка удалена");
+
+      await loadWatches();
+
+    } catch (error) {
+
+      toast(
+        error.message
+      );
+    }
+  }
+
+
+  /*
+  ==================================================
+  MUTES
+  ==================================================
+  */
+
+  async function loadMutes() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/mutes"
+        );
+
+      const list =
+        document.getElementById(
+          "muteList"
+        );
+
+      const users =
+        data.users || [];
+
+      if (!users.length) {
+
+        list.innerHTML =
+          `<div class="empty">
+             Мутов нет
+           </div>`;
+
+        return;
+      }
+
+      list.innerHTML =
+        users.map(
+          user => `
+            <div class="list-item">
+              <b>${escapeHtml(
+                String(user.user_id)
+              )}</b>
+
+              <div class="muted">
+                ${
+                  user.expires_at
+                    ? `до ${new Date(
+                        Number(user.expires_at) * 1000
+                      ).toLocaleString()}`
+                    : "Навсегда"
+                }
+              </div>
+            </div>
+          `
+        ).join("");
+
+    } catch (error) {
+
+      console.error(
+        "MUTES LOAD:",
+        error
+      );
+    }
+  }
+
+
+  async function muteUser() {
+
+    const userId =
+      Number(
+        document.getElementById(
+          "muteUser"
+        ).value
+      );
+
+    const duration =
+      document.getElementById(
+        "muteDuration"
+      ).value.trim();
+
+    if (
+      !Number.isInteger(userId) ||
+      userId <= 0
+    ) {
+      toast("Нужен корректный Telegram ID");
+      return;
+    }
+
+    try {
+
+      await api(
+        "/api/mute",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            user_id: userId,
+            duration
+          })
+        }
+      );
+
+      toast("Пользователь замьючен");
+
+      await loadMutes();
+
+    } catch (error) {
+
+      toast(
+        error.message
+      );
+    }
+  }
+
+
+  async function unmuteUser() {
+
+    const userId =
+      Number(
+        document.getElementById(
+          "muteUser"
+        ).value
+      );
+
+    if (
+      !Number.isInteger(userId) ||
+      userId <= 0
+    ) {
+      toast("Нужен корректный Telegram ID");
+      return;
+    }
+
+    try {
+
+      await api(
+        "/api/unmute",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            user_id: userId
+          })
+        }
+      );
+
+      toast("Мут снят");
+
+      await loadMutes();
+
+    } catch (error) {
+
+      toast(
+        error.message
+      );
+    }
+  }
+
+
+  /*
+  ==================================================
+  AI
+  ==================================================
+  */
+
+  async function runAI() {
+
+    const input =
+      document.getElementById(
+        "aiPrompt"
+      );
+
+    const result =
+      document.getElementById(
+        "aiResult"
+      );
+
+    const prompt =
+      input.value.trim();
+
+    if (!prompt) {
+      toast("Напиши команду");
+      return;
+    }
+
+    result.textContent =
+      "Выполнение...";
+
+    try {
+
+      const data =
+        await api(
+          "/api/ai",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              prompt
+            })
+          }
+        );
+
+      result.textContent =
+        data.reply ||
+        "Готово";
+
+      await Promise.all([
+        loadMutes(),
+        loadWatches(),
+        loadMe()
+      ]);
+
+    } catch (error) {
+
+      result.textContent =
+        error.message;
+    }
+  }
+
+
+  /*
+  ==================================================
+  EVENTS
+  ==================================================
+  */
+
+  async function loadEvents() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/events"
+        );
+
+      const list =
+        document.getElementById(
+          "eventsList"
+        );
+
+      const events =
+        data.events || [];
+
+      if (!events.length) {
+
+        list.innerHTML =
+          `<div class="empty">
+             Событий пока нет
+           </div>`;
+
+        return;
+      }
+
+      list.innerHTML =
+        events.slice(0, 30).map(
+          event => {
+
+            let eventData = "";
+
+            try {
+              eventData =
+                typeof event.data === "object"
+                  ? JSON.stringify(event.data)
+                  : String(event.data || "");
+            } catch {}
+
+            return `
+              <div class="list-item event">
+                <div class="event-type">
+                  ${escapeHtml(
+                    event.type
+                  )}
+                </div>
+
+                <div class="muted">
+                  ${new Date(
+                    Number(event.created_at) * 1000
+                  ).toLocaleString()}
+                </div>
+
+                <div>
+                  ${escapeHtml(
+                    eventData
+                  )}
+                </div>
+              </div>
+            `;
+          }
+        ).join("");
+
+    } catch (error) {
+
+      console.error(
+        "EVENTS LOAD:",
+        error
+      );
+    }
+  }
+
+
+  /*
+  ==================================================
+  WEBHOOK
+  ==================================================
+  */
+
+  async function setupWebhook() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/setup-webhook",
+          {
+            method: "POST"
+          }
+        );
+
+      toast(
+        `Webhook установлен`
+      );
+
+      console.log(
+        data
+      );
+
+    } catch (error) {
+
+      toast(
+        error.message
+      );
+    }
+  }
+
+
+  /*
+  ==================================================
+  NAVIGATION
+  ==================================================
+  */
+
+  function showPage(page) {
+
+    document.querySelectorAll(
+      ".page"
+    ).forEach(
+      element => {
+        element.classList.remove(
+          "active"
+        );
+      }
+    );
+
+    document.getElementById(
+      `page-${page}`
+    )?.classList.add(
+      "active"
+    );
+
+    document.querySelectorAll(
+      ".nav-button"
+    ).forEach(
+      button => {
+        button.classList.toggle(
+          "active",
+          button.dataset.page === page
+        );
+      }
+    );
+
+    if (page === "watch") {
+      loadWatches();
+    }
+
+    if (page === "actions") {
+      loadMutes();
+    }
+
+    if (page === "settings") {
+      loadEvents();
+    }
+  }
+
+
+  /*
+  ==================================================
+  UI
+  ==================================================
+  */
+
+  function hideLoading() {
+
+    document.getElementById(
+      "loading"
+    ).style.display = "none";
+
+    document.getElementById(
+      "errorScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+      "app"
+    ).style.display = "block";
+  }
+
+
+  function showError(message) {
+
+    document.getElementById(
+      "loading"
+    ).style.display = "none";
+
+    document.getElementById(
+      "app"
+    ).style.display = "none";
+
+    document.getElementById(
+      "errorScreen"
+    ).style.display = "flex";
+
+    document.getElementById(
+      "errorText"
+    ).textContent =
+      message ||
+      "Неизвестная ошибка";
+  }
+
+
+  function toast(message) {
+
+    const element =
+      document.getElementById(
+        "toast"
+      );
+
+    element.textContent =
+      message;
+
+    element.classList.add(
+      "show"
+    );
+
+    clearTimeout(
+      window.__toastTimer
+    );
+
+    window.__toastTimer =
+      setTimeout(
+        () => {
+          element.classList.remove(
+            "show"
+          );
+        },
+        2800
+      );
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+
+  /*
+  ==================================================
+  START
+  ==================================================
+  */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+      console.log(
+        "STMA Mini App started"
+      );
+
+      console.log(
+        "Telegram WebApp:",
+        Boolean(tg)
+      );
+
+      console.log(
+        "initData:",
+        tg?.initData
+          ? "present"
+          : "missing"
+      );
+
+      loadMe();
+    }
+  );
+</script>
+
+</body>
+</html>
