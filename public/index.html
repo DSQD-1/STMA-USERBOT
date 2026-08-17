@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0b0d12"
+  >
+
+  <title>STMA</title>
+
+  <link
+    rel="stylesheet"
+    href="/style.css"
+  >
+
+  <script
+    src="https://telegram.org/js/telegram-web-app.js"
+  ></script>
+</head>
+
+<body>
+
+<div id="app">
+
+  <header class="topbar">
+
+    <div>
+      <div class="brand">
+        STMA
+      </div>
+
+      <div
+        id="pageSubtitle"
+        class="subtitle"
+      >
+        Telegram Business Manager
+      </div>
+    </div>
+
+    <div
+      id="connectionBadge"
+      class="connection-badge offline"
+    >
+      <span></span>
+      Нет связи
+    </div>
+
+  </header>
+
+  <main class="content">
+
+    <!-- HOME -->
+
+    <section
+      id="page-home"
+      class="page active"
+    >
+
+      <div
+        id="connectionCard"
+        class="hero-card"
+      >
+        <div class="hero-icon">
+          ST
+        </div>
+
+        <div class="hero-content">
+
+          <div class="eyebrow">
+            BUSINESS CONNECTION
+          </div>
+
+          <h1 id="connectionTitle">
+            Проверяем подключение…
+          </h1>
+
+          <p id="connectionDescription">
+            STMA получает состояние Telegram Business.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="stats-grid">
+
+        <div class="stat-card">
+          <strong id="statReceived">
+            0
+          </strong>
+          <span>
+            Получено
+          </span>
+        </div>
+
+        <div class="stat-card">
+          <strong id="statSent">
+            0
+          </strong>
+          <span>
+            Отправлено
+          </span>
+        </div>
+
+        <div class="stat-card">
+          <strong id="statDeleted">
+            0
+          </strong>
+          <span>
+            Удалено
+          </span>
+        </div>
+
+        <div class="stat-card">
+          <strong id="statEvents">
+            0
+          </strong>
+          <span>
+            События
+          </span>
+        </div>
+
+      </div>
+
+      <div class="section-title">
+        Управление
+      </div>
+
+      <div class="quick-grid">
+
+        <button
+          class="quick-card"
+          data-page="messages"
+        >
+          <span>💬</span>
+          <b>Сообщения</b>
+          <small>
+            История и отправка
+          </small>
+        </button>
+
+        <button
+          class="quick-card"
+          data-page="edited"
+        >
+          <span>✏️</span>
+          <b>Изменённые</b>
+          <small>
+            Изменения сообщений
+          </small>
+        </button>
+
+        <button
+          class="quick-card"
+          data-page="deleted"
+        >
+          <span>🗑</span>
+          <b>Удалённые</b>
+          <small>
+            Удалённые сообщения
+          </small>
+        </button>
+
+        <button
+          class="quick-card"
+          data-page="commands"
+        >
+          <span>🤖</span>
+          <b>AI-команды</b>
+          <small>
+            Управление текстом
+          </small>
+        </button>
+
+        <button
+          class="quick-card"
+          data-page="watch"
+        >
+          <span>👁</span>
+          <b>Слежка</b>
+          <small>
+            Отслеживание аккаунтов
+          </small>
+        </button>
+
+        <button
+          class="quick-card"
+          data-page="events"
+        >
+          <span>⚡</span>
+          <b>События</b>
+          <small>
+            Журнал STMA
+          </small>
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- MESSAGES -->
+
+    <section
+      id="page-messages"
+      class="page"
+    >
+
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">
+            BUSINESS
+          </div>
+
+          <h2>
+            Сообщения
+          </h2>
+        </div>
+      </div>
+
+      <div class="panel">
+
+        <label>
+          Chat ID
+          <input
+            id="messageChatId"
+            type="text"
+            inputmode="numeric"
+            placeholder="-100123456789"
+          >
+        </label>
+
+        <label>
+          Текст
+          <textarea
+            id="messageText"
+            rows="4"
+            placeholder="Напиши сообщение…"
+          ></textarea>
+        </label>
+
+        <label>
+          Удалить через
+          <div class="input-row">
+            <input
+              id="messageDeleteAfter"
+              type="number"
+              min="0"
+              placeholder="0"
+            >
+
+            <span class="input-suffix">
+              секунд
+            </span>
+          </div>
+        </label>
+
+        <button
+          id="sendMessageButton"
+          class="primary-button"
+        >
+          Отправить
+        </button>
+
+      </div>
+
+      <div class="section-title">
+        История
+      </div>
+
+      <div
+        id="messagesList"
+        class="list"
+      ></div>
+
+    </section>
+
+    <!-- EDITED -->
+
+    <section
+      id="page-edited"
+      class="page"
+    >
+
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">
+            HISTORY
+          </div>
+
+          <h2>
+            Изменённые
+          </h2>
+        </div>
+      </div>
+
+      <div
+        id="editedList"
+        class="list"
+      ></div>
+
+    </section>
+
+    <!-- DELETED -->
+
+    <section
+      id="page-deleted"
+      class="page"
+    >
+
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">
+            HISTORY
+          </div>
+
+          <h2>
+            Удалённые
+          </h2>
+        </div>
+      </div>
+
+      <div
+        id="deletedList"
+        class="list"
+      ></div>
+
+    </section>
+
+    <!-- COMMANDS -->
+
+    <section
+      id="page-commands"
+      class="page"
+    >
+
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">
+            STMA AI
+          </div>
+
+          <h2>
+            AI-команды
+          </h2>
+        </div>
+      </div>
+
+      <div class="panel">
+
+        <label>
+          Chat ID
+          <input
+            id="commandChatId"
+            type="text"
+            inputmode="numeric"
+            placeholder="-100123456789"
+          >
+        </label>
+
+        <label>
+          Команда
+          <textarea
+            id="commandInput"
+            rows="3"
+            placeholder="замуть 123456789 на 30 минут"
+          ></textarea>
+        </label>
+
+        <button
+          id="executeCommandButton"
+          class="primary-button"
+        >
+          Выполнить
+        </button>
+
+      </div>
+
+      <div class="command-examples">
+
+        <button
+          class="example"
+          data-command="замуть 123456789 на 30 минут"
+        >
+          замуть 123456789 на 30 минут
+        </button>
+
+        <button
+          class="example"
+          data-command="размути 123456789"
+        >
+          размути 123456789
+        </button>
+
+        <button
+          class="example"
+          data-command="следи за @username"
+        >
+          следи за @username
+        </button>
+
+      </div>
+
+      <div
+        id="commandResult"
+        class="result-box hidden"
+      ></div>
+
+    </section>
+
+    <!-- WATCH -->
+
+    <section
+      id="page-watch"
+      class="page"
+    >
+
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">
+            MONITORING
+          </div>
+
+          <h2>
+            Слежка
+          </h2>
+        </div>
+      </div>
+
+      <div class="panel">
+
+        <label>
+          Username
+          <div class="input-row">
+
+            <span class="input-prefix">
+              @
+            </span>
+
+            <input
+              id="watchUsername"
+              type="text"
+              placeholder="username"
+            >
+
+          </div>
+        </label>
+
+        <button
+          id="addWatchButton"
+          class="primary-button"
+        >
+          Добавить
+        </button>
+
+      </div>
+
+      <div class="section-title">
+        Активные
+      </div>
+
+      <div
+        id="watchesList"
+        class="list"
+      ></div>
+
+    </section>
+
+    <!-- EVENTS -->
+
+    <section
+      id="page-events"
+      class="page"
+    >
+
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">
+            LOG
+          </div>
+
+          <h2>
+            События
+          </h2>
+        </div>
+      </div>
+
+      <div
+        id="eventsList"
+        class="list"
+      ></div>
+
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+
+    <button
+      class="nav-button active"
+      data-page="home"
+    >
+      <span>⌂</span>
+      <small>
+        Главная
+      </small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-page="messages"
+    >
+      <span>💬</span>
+      <small>
+        Сообщения
+      </small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-page="commands"
+    >
+      <span>AI</span>
+      <small>
+        Команды
+      </small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-page="watch"
+    >
+      <span>◉</span>
+      <small>
+        Слежка
+      </small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-page="events"
+    >
+      <span>⚡</span>
+      <small>
+        События
+      </small>
+    </button>
+
+  </nav>
+
+</div>
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+<script src="/app.js"></script>
+
+</body>
+</html>
