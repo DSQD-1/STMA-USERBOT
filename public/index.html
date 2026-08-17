@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+  >
+
+  <meta
+    name="theme-color"
+    content="#111318"
+  >
+
+  <title>STMA</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link
+    rel="stylesheet"
+    href="/style.css"
+  >
+</head>
+
+<body>
+
+<div id="app">
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        ST
+      </div>
+
+      <div>
+        <div class="brand-title">
+          STMA
+        </div>
+
+        <div
+          id="connection-status"
+          class="brand-status"
+        >
+          Проверка...
+        </div>
+      </div>
+
+    </div>
+
+    <button
+      id="refresh-button"
+      class="icon-button"
+      aria-label="Обновить"
+    >
+      ↻
+    </button>
+
+  </header>
+
+
+  <main class="content">
+
+    <section
+      id="loading-screen"
+      class="screen-center"
+    >
+      <div class="loader"></div>
+
+      <div>
+        Загрузка STMA...
+      </div>
+    </section>
+
+
+    <section
+      id="error-screen"
+      class="screen-center hidden"
+    >
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <h2>
+        Ошибка
+      </h2>
+
+      <p
+        id="error-text"
+        class="muted"
+      ></p>
+
+      <button
+        id="retry-button"
+        class="primary-button"
+      >
+        Повторить
+      </button>
+
+    </section>
+
+
+    <section
+      id="main-screen"
+      class="hidden"
+    >
+
+      <!-- CONNECTION -->
+
+      <div class="connection-card">
+
+        <div class="connection-left">
+
+          <div
+            id="connection-dot"
+            class="connection-dot"
+          ></div>
+
+          <div>
+
+            <div class="small-label">
+              BUSINESS CONNECTION
+            </div>
+
+            <div
+              id="connection-name"
+              class="connection-name"
+            >
+              —
+            </div>
+
+          </div>
+
+        </div>
+
+        <div
+          id="connection-state"
+          class="connection-state"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <!-- STATS -->
+
+      <section class="stats-grid">
+
+        <div class="stat-card">
+
+          <span>
+            Получено
+          </span>
+
+          <strong
+            id="stat-received"
+          >
+            0
+          </strong>
+
+        </div>
+
+        <div class="stat-card">
+
+          <span>
+            Отправлено
+          </span>
+
+          <strong
+            id="stat-sent"
+          >
+            0
+          </strong>
+
+        </div>
+
+        <div class="stat-card">
+
+          <span>
+            Изменено
+          </span>
+
+          <strong
+            id="stat-edited"
+          >
+            0
+          </strong>
+
+        </div>
+
+        <div class="stat-card">
+
+          <span>
+            Удалено
+          </span>
+
+          <strong
+            id="stat-deleted"
+          >
+            0
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- AI -->
+
+      <section class="panel ai-panel">
+
+        <div class="panel-header">
+
+          <div>
+
+            <div class="panel-title">
+              AI Command
+            </div>
+
+            <div class="panel-subtitle">
+              Управляй STMA обычным текстом
+            </div>
+
+          </div>
+
+          <div class="ai-badge">
+            AI
+          </div>
+
+        </div>
+
+
+        <div class="command-box">
+
+          <textarea
+            id="command-input"
+            rows="3"
+            maxlength="2000"
+            placeholder="Например: замуть @username на 30 минут"
+          ></textarea>
+
+          <button
+            id="command-button"
+            class="primary-button command-button"
+          >
+            Выполнить
+          </button>
+
+        </div>
+
+
+        <div
+          id="command-result"
+          class="command-result hidden"
+        ></div>
+
+
+        <div class="examples">
+
+          <button
+            class="example"
+            data-command="замуть @username на 30 минут"
+          >
+            замуть @username на 30 минут
+          </button>
+
+          <button
+            class="example"
+            data-command="размути @username"
+          >
+            размути @username
+          </button>
+
+          <button
+            class="example"
+            data-command="следи за @username"
+          >
+            следи за @username
+          </button>
+
+          <button
+            class="example"
+            data-command="покажи измененные сообщения"
+          >
+            покажи измененные
+          </button>
+
+          <button
+            class="example"
+            data-command="покажи удаленные сообщения"
+          >
+            покажи удаленные
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- NAVIGATION -->
+
+      <nav class="tabs">
+
+        <button
+          class="tab active"
+          data-tab="messages"
+        >
+          <span>▤</span>
+          <small>Сообщения</small>
+        </button>
+
+        <button
+          class="tab"
+          data-tab="edited"
+        >
+          <span>✎</span>
+          <small>Изменённые</small>
+        </button>
+
+        <button
+          class="tab"
+          data-tab="deleted"
+        >
+          <span>×</span>
+          <small>Удалённые</small>
+        </button>
+
+        <button
+          class="tab"
+          data-tab="watches"
+        >
+          <span>◉</span>
+          <small>Слежка</small>
+        </button>
+
+        <button
+          class="tab"
+          data-tab="events"
+        >
+          <span>⚡</span>
+          <small>События</small>
+        </button>
+
+      </nav>
+
+
+      <!-- MESSAGES -->
+
+      <section
+        id="tab-messages"
+        class="tab-content"
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              История сообщений
+            </h2>
+
+            <p>
+              Последние сообщения Business Account
+            </p>
+          </div>
+
+          <button
+            class="small-button"
+            data-refresh-tab="messages"
+          >
+            Обновить
+          </button>
+
+        </div>
+
+        <div
+          id="messages-list"
+          class="items"
+        ></div>
+
+      </section>
+
+
+      <!-- EDITED -->
+
+      <section
+        id="tab-edited"
+        class="tab-content hidden"
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              Изменённые
+            </h2>
+
+            <p>
+              Сообщения, которые были отредактированы
+            </p>
+          </div>
+
+        </div>
+
+        <div
+          id="edited-list"
+          class="items"
+        ></div>
+
+      </section>
+
+
+      <!-- DELETED -->
+
+      <section
+        id="tab-deleted"
+        class="tab-content hidden"
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              Удалённые
+            </h2>
+
+            <p>
+              Удалённые сообщения и время удаления
+            </p>
+          </div>
+
+        </div>
+
+        <div
+          id="deleted-list"
+          class="items"
+        ></div>
+
+      </section>
+
+
+      <!-- WATCHES -->
+
+      <section
+        id="tab-watches"
+        class="tab-content hidden"
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              Слежка
+            </h2>
+
+            <p>
+              Отслеживаемые аккаунты
+            </p>
+          </div>
+
+        </div>
+
+        <div
+          id="watches-list"
+          class="items"
+        ></div>
+
+      </section>
+
+
+      <!-- EVENTS -->
+
+      <section
+        id="tab-events"
+        class="tab-content hidden"
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              События
+            </h2>
+
+            <p>
+              Последние действия STMA
+            </p>
+          </div>
+
+        </div>
+
+        <div
+          id="events-list"
+          class="items"
+        ></div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+
+  <div
+    id="toast"
+    class="toast hidden"
+  ></div>
+
+</div>
+
+<script src="/app.js"></script>
+
+</body>
+</html>
