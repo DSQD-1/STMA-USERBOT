@@ -1,16 +1,16 @@
 {
-  "name": "stma-userbot",
+  "name": "stma",
   "version": "3.0.0",
-  "description": "STMA Telegram Business automation Web App",
+  "description": "STMA Telegram Business Manager",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "dependencies": {
-    "@libsql/client": "^0.15.9",
-    "express": "^4.21.2"
+    "@libsql/client": "^0.15.15",
+    "express": "^5.1.0"
   }
 }
