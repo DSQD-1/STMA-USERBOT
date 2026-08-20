@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#080b12"
+  >
+
+  <title>STMA</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div id="loading" class="loading">
+  <div class="spinner"></div>
+  <div>Запуск STMA...</div>
+</div>
+
+<div id="app" class="app hidden">
+
+  <header class="topbar">
+    <div>
+      <div class="brand">STMA</div>
+      <div id="userName" class="subtitle">
+        Telegram Business Manager
+      </div>
+    </div>
+
+    <button
+      id="refreshButton"
+      class="icon-button"
+      type="button"
+    >
+      ↻
+    </button>
+  </header>
+
+  <main>
+
+    <section id="dashboard" class="screen active">
+
+      <div class="hero-card">
+        <div class="hero-icon">⚡</div>
+
+        <div>
+          <h1>STMA</h1>
+          <p>
+            Управление Telegram Business
+            полностью внутри Mini App.
+          </p>
+        </div>
+      </div>
+
+      <div class="section-title">
+        Business Connection
+      </div>
+
+      <div id="connections" class="cards">
+        <div class="empty">
+          Подключений пока нет.
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-title">
+          Как подключить Business
+        </div>
+
+        <div class="info-text">
+          Подключите этого бота в настройках
+          Telegram Business. После подключения
+          Telegram автоматически отправит STMA
+          Business Connection.
+        </div>
+      </div>
+
+    </section>
+
+    <section id="messages" class="screen">
+
+      <div class="page-title">
+        Сообщения
+      </div>
+
+      <div id="selectedConnectionMessage"
+           class="selected-connection">
+        Подключение не выбрано
+      </div>
+
+      <div class="form-card">
+
+        <label>Chat ID</label>
+
+        <input
+          id="chatId"
+          inputmode="numeric"
+          placeholder="-1001234567890"
+        >
+
+        <label>Сообщение</label>
+
+        <textarea
+          id="messageText"
+          rows="5"
+          placeholder="Введите сообщение..."
+        ></textarea>
+
+        <label>
+          Удалить через
+          <span class="muted">(секунд)</span>
+        </label>
+
+        <input
+          id="deleteAfter"
+          inputmode="numeric"
+          placeholder="0"
+          value="0"
+        >
+
+        <button
+          id="sendMessageButton"
+          class="primary-button"
+          type="button"
+        >
+          Отправить
+        </button>
+
+      </div>
+
+      <div class="section-title">
+        История
+      </div>
+
+      <div id="messageHistory"
+           class="list">
+        <div class="empty">
+          Загрузка...
+        </div>
+      </div>
+
+    </section>
+
+    <section id="commands" class="screen">
+
+      <div class="page-title">
+        AI-команды
+      </div>
+
+      <div class="command-help">
+        <div>
+          <b>Примеры</b>
+        </div>
+
+        <div>
+          замуть 123456789 на 30 минут
+        </div>
+
+        <div>
+          размути 123456789
+        </div>
+
+        <div>
+          следи за @username
+        </div>
+      </div>
+
+      <div class="form-card">
+
+        <label>Chat ID для mute/unmute</label>
+
+        <input
+          id="commandChatId"
+          inputmode="numeric"
+          placeholder="-1001234567890"
+        >
+
+        <label>Команда</label>
+
+        <input
+          id="commandInput"
+          placeholder="замуть 123456789 на 30 минут"
+        >
+
+        <button
+          id="executeCommandButton"
+          class="primary-button"
+          type="button"
+        >
+          Выполнить
+        </button>
+
+      </div>
+
+      <div
+        id="commandResult"
+        class="result-card hidden"
+      ></div>
+
+    </section>
+
+    <section id="watches" class="screen">
+
+      <div class="page-title">
+        Слежка
+      </div>
+
+      <div class="form-card">
+
+        <label>Username</label>
+
+        <input
+          id="watchUsername"
+          placeholder="@username"
+        >
+
+        <button
+          id="addWatchButton"
+          class="primary-button"
+          type="button"
+        >
+          Добавить
+        </button>
+
+      </div>
+
+      <div
+        id="watchList"
+        class="list"
+      ></div>
+
+    </section>
+
+    <section id="events" class="screen">
+
+      <div class="page-title">
+        События
+      </div>
+
+      <div
+        id="eventList"
+        class="list"
+      ></div>
+
+    </section>
+
+    <section id="stats" class="screen">
+
+      <div class="page-title">
+        Статистика
+      </div>
+
+      <div
+        id="statsGrid"
+        class="stats-grid"
+      ></div>
+
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+
+    <button
+      class="nav-button active"
+      data-screen="dashboard"
+      type="button"
+    >
+      <span>⌂</span>
+      <small>Главная</small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-screen="messages"
+      type="button"
+    >
+      <span>◉</span>
+      <small>Сообщения</small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-screen="commands"
+      type="button"
+    >
+      <span>⌘</span>
+      <small>Команды</small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-screen="watches"
+      type="button"
+    >
+      <span>◌</span>
+      <small>Слежка</small>
+    </button>
+
+    <button
+      class="nav-button"
+      data-screen="stats"
+      type="button"
+    >
+      <span>▦</span>
+      <small>Статистика</small>
+    </button>
+
+  </nav>
+
+</div>
+
+<div
+  id="toast"
+  class="toast hidden"
+></div>
+
+<script src="/app.js"></script>
+
+</body>
+</html>
