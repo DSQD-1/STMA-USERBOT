@@ -1,7 +1,8 @@
 {
   "name": "stma",
   "version": "2.0.0",
-  "description": "STMA Telegram Business Manager",
+  "description": "STMA Telegram Business Manager Mini App",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -10,7 +11,7 @@
     "node": "24.x"
   },
   "dependencies": {
-    "@libsql/client": "^0.15.15",
-    "express": "^5.1.0"
+    "@libsql/client": "0.17.4",
+    "express": "5.1.0"
   }
 }
