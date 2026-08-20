@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no"
+  >
+
+  <meta name="theme-color" content="#080b12">
+
+  <title>STMA</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+  <!-- LOADING -->
+
+  <div id="loading" class="loading-screen">
+    <div class="loading-logo">
+      <div class="logo-mark">S</div>
+    </div>
+
+    <div class="loading-title">STMA</div>
+
+    <div class="loading-subtitle">
+      Telegram Business Manager
+    </div>
+
+    <div class="loader"></div>
+  </div>
+
+
+  <!-- APP -->
+
+  <main id="app" class="app hidden">
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          S
+        </div>
+
+        <div>
+          <div class="brand-title">
+            STMA
+          </div>
+
+          <div class="brand-subtitle">
+            Business Manager
+          </div>
+        </div>
+
+      </div>
+
+      <button
+        id="refreshButton"
+        class="icon-button"
+        type="button"
+        aria-label="Обновить"
+      >
+        ↻
+      </button>
+
+    </header>
+
+
+    <!-- USER -->
+
+    <section class="user-card">
+
+      <div class="user-avatar">
+        <span>👤</span>
+      </div>
+
+      <div class="user-info">
+
+        <span class="user-label">
+          Аккаунт
+        </span>
+
+        <strong id="userName">
+          Telegram User
+        </strong>
+
+      </div>
+
+      <div class="online-dot"></div>
+
+    </section>
+
+
+    <!-- DASHBOARD -->
+
+    <section
+      id="dashboard"
+      class="screen active"
+    >
+
+      <div class="section-heading">
+
+        <div>
+          <span class="eyebrow">
+            OVERVIEW
+          </span>
+
+          <h1>
+            Панель управления
+          </h1>
+        </div>
+
+      </div>
+
+
+      <!-- CONNECTIONS -->
+
+      <div class="section-title-row">
+
+        <div>
+          <h2>
+            Business Connections
+          </h2>
+
+          <p>
+            Подключения Telegram Business
+          </p>
+        </div>
+
+      </div>
+
+      <div
+        id="connections"
+        class="connections"
+      >
+        <div class="empty">
+          Загрузка...
+        </div>
+      </div>
+
+
+      <!-- QUICK ACTIONS -->
+
+      <div class="section-title-row quick-heading">
+
+        <div>
+          <h2>
+            Быстрые действия
+          </h2>
+
+          <p>
+            Управление выбранным подключением
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="quick-grid">
+
+        <button
+          class="quick-card"
+          data-screen="messages"
+          type="button"
+        >
+          <span class="quick-icon blue">
+            💬
+          </span>
+
+          <span>
+            <strong>
+              Сообщения
+            </strong>
+
+            <small>
+              История и отправка
+            </small>
+          </span>
+        </button>
+
+
+        <button
+          class="quick-card"
+          data-screen="commands"
+          type="button"
+        >
+          <span class="quick-icon purple">
+            ⚡
+          </span>
+
+          <span>
+            <strong>
+              Команды
+            </strong>
+
+            <small>
+              Управление ботом
+            </small>
+          </span>
+        </button>
+
+
+        <button
+          class="quick-card"
+          data-screen="watches"
+          type="button"
+        >
+          <span class="quick-icon orange">
+            👁
+          </span>
+
+          <span>
+            <strong>
+              Слежения
+            </strong>
+
+            <small>
+              Мониторинг пользователей
+            </small>
+          </span>
+        </button>
+
+
+        <button
+          class="quick-card"
+          data-screen="events"
+          type="button"
+        >
+          <span class="quick-icon green">
+            📡
+          </span>
+
+          <span>
+            <strong>
+              События
+            </strong>
+
+            <small>
+              Журнал активности
+            </small>
+          </span>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- MESSAGES -->
+
+    <section
+      id="messages"
+      class="screen"
+    >
+
+      <div class="page-header">
+
+        <button
+          class="back-local"
+          data-screen="dashboard"
+          type="button"
+        >
+          ‹
+        </button>
+
+        <div>
+          <span class="eyebrow">
+            MESSAGES
+          </span>
+
+          <h1>
+            Сообщения
+          </h1>
+        </div>
+
+      </div>
+
+
+      <div class="selected-connection">
+
+        <span class="status-dot"></span>
+
+        <div>
+          <small>
+            Подключение
+          </small>
+
+          <strong id="selectedConnectionMessage">
+            Не выбрано
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="panel-title">
+          Отправить сообщение
+        </div>
+
+        <label>
+          Chat ID
+        </label>
+
+        <input
+          id="chatId"
+          class="input"
+          type="text"
+          placeholder="Например: 123456789"
+          autocomplete="off"
+        >
+
+        <label>
+          Сообщение
+        </label>
+
+        <textarea
+          id="messageText"
+          class="input textarea"
+          placeholder="Введите сообщение..."
+          rows="4"
+        ></textarea>
+
+        <label>
+          Удалить через
+        </label>
+
+        <select
+          id="deleteAfter"
+          class="input"
+        >
+          <option value="0">
+            Не удалять
+          </option>
+
+          <option value="10">
+            10 секунд
+          </option>
+
+          <option value="30">
+            30 секунд
+          </option>
+
+          <option value="60">
+            1 минута
+          </option>
+
+          <option value="300">
+            5 минут
+          </option>
+
+          <option value="3600">
+            1 час
+          </option>
+        </select>
+
+        <button
+          id="sendMessageButton"
+          class="primary-button"
+          type="button"
+        >
+          <span>➤</span>
+          Отправить сообщение
+        </button>
+
+      </div>
+
+
+      <div class="section-title-row">
+
+        <div>
+          <h2>
+            История
+          </h2>
+
+          <p>
+            Последние сообщения
+          </p>
+        </div>
+
+      </div>
+
+      <div
+        id="messageHistory"
+        class="list"
+      ></div>
+
+    </section>
+
+
+    <!-- COMMANDS -->
+
+    <section
+      id="commands"
+      class="screen"
+    >
+
+      <div class="page-header">
+
+        <button
+          class="back-local"
+          data-screen="dashboard"
+          type="button"
+        >
+          ‹
+        </button>
+
+        <div>
+          <span class="eyebrow">
+            COMMAND CENTER
+          </span>
+
+          <h1>
+            Команды
+          </h1>
+        </div>
+
+      </div>
+
+
+      <div class="command-hero">
+
+        <div class="command-hero-icon">
+          ⚡
+        </div>
+
+        <div>
+          <strong>
+            Выполнить команду
+          </strong>
+
+          <p>
+            Команда будет обработана через выбранный Business Connection.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <label>
+          Chat ID
+        </label>
+
+        <input
+          id="commandChatId"
+          class="input"
+          type="text"
+          placeholder="Необязательно"
+          autocomplete="off"
+        >
+
+        <label>
+          Команда
+        </label>
+
+        <input
+          id="commandInput"
+          class="input command-input"
+          type="text"
+          placeholder=".help"
+          autocomplete="off"
+        >
+
+        <div class="command-hints">
+
+          <button
+            type="button"
+            data-command=".help"
+          >
+            .help
+          </button>
+
+          <button
+            type="button"
+            data-command=".info"
+          >
+            .info
+          </button>
+
+          <button
+            type="button"
+            data-command=".uinfo"
+          >
+            .uinfo
+          </button>
+
+          <button
+            type="button"
+            data-command=".watches"
+          >
+            .watches
+          </button>
+
+          <button
+            type="button"
+            data-command=".spt"
+          >
+            .spt
+          </button>
+
+        </div>
+
+        <button
+          id="executeCommandButton"
+          class="primary-button"
+          type="button"
+        >
+          <span>▶</span>
+          Выполнить
+        </button>
+
+      </div>
+
+
+      <div
+        id="commandResult"
+        class="command-result hidden"
+      ></div>
+
+    </section>
+
+
+    <!-- WATCHES -->
+
+    <section
+      id="watches"
+      class="screen"
+    >
+
+      <div class="page-header">
+
+        <button
+          class="back-local"
+          data-screen="dashboard"
+          type="button"
+        >
+          ‹
+        </button>
+
+        <div>
+          <span class="eyebrow">
+            MONITORING
+          </span>
+
+          <h1>
+            Слежения
+          </h1>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="panel-title">
+          Добавить пользователя
+        </div>
+
+        <p class="panel-description">
+          Следите за активностью указанного Telegram username.
+        </p>
+
+        <div class="input-row">
+
+          <input
+            id="watchUsername"
+            class="input"
+            type="text"
+            placeholder="@username"
+            autocomplete="off"
+          >
+
+          <button
+            id="addWatchButton"
+            class="add-button"
+            type="button"
+          >
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-title-row">
+
+        <div>
+          <h2>
+            Активные
+          </h2>
+
+          <p>
+            Пользователи под наблюдением
+          </p>
+        </div>
+
+      </div>
+
+
+      <div
+        id="watchList"
+        class="list"
+      ></div>
+
+    </section>
+
+
+    <!-- EVENTS -->
+
+    <section
+      id="events"
+      class="screen"
+    >
+
+      <div class="page-header">
+
+        <button
+          class="back-local"
+          data-screen="dashboard"
+          type="button"
+        >
+          ‹
+        </button>
+
+        <div>
+          <span class="eyebrow">
+            ACTIVITY
+          </span>
+
+          <h1>
+            События
+          </h1>
+        </div>
+
+      </div>
+
+
+      <div class="activity-banner">
+
+        <div class="activity-icon">
+          📡
+        </div>
+
+        <div>
+          <strong>
+            Журнал активности
+          </strong>
+
+          <p>
+            Здесь появляются события Business API.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div
+        id="eventList"
+        class="list"
+      ></div>
+
+    </section>
+
+
+    <!-- STATS -->
+
+    <section
+      id="stats"
+      class="screen"
+    >
+
+      <div class="page-header">
+
+        <button
+          class="back-local"
+          data-screen="dashboard"
+          type="button"
+        >
+          ‹
+        </button>
+
+        <div>
+          <span class="eyebrow">
+            ANALYTICS
+          </span>
+
+          <h1>
+            Статистика
+          </h1>
+        </div>
+
+      </div>
+
+
+      <div
+        id="statsGrid"
+        class="stats-grid"
+      ></div>
+
+    </section>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-button active"
+        data-screen="dashboard"
+        type="button"
+      >
+        <span>⌂</span>
+        <small>
+          Главная
+        </small>
+      </button>
+
+      <button
+        class="nav-button"
+        data-screen="messages"
+        type="button"
+      >
+        <span>▣</span>
+        <small>
+          Сообщения
+        </small>
+      </button>
+
+      <button
+        class="nav-button"
+        data-screen="watches"
+        type="button"
+      >
+        <span>◉</span>
+        <small>
+          Слежения
+        </small>
+      </button>
+
+      <button
+        class="nav-button"
+        data-screen="events"
+        type="button"
+      >
+        <span>◈</span>
+        <small>
+          События
+        </small>
+      </button>
+
+      <button
+        class="nav-button"
+        data-screen="stats"
+        type="button"
+      >
+        <span>▥</span>
+        <small>
+          Статистика
+        </small>
+      </button>
+
+    </nav>
+
+  </main>
+
+
+  <!-- TOAST -->
+
+  <div
+    id="toast"
+    class="toast hidden"
+  ></div>
+
+
+  <script src="/app.js"></script>
+
+</body>
+</html>
